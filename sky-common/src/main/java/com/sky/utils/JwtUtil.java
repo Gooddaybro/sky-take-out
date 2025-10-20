@@ -47,6 +47,7 @@ public class JwtUtil {
      */
     public static Claims parseJWT(String secretKey, String token) {
         // 得到DefaultJwtParser
+        //允许最多60秒偏差
         Claims claims = Jwts.parser()
                 // 设置签名的秘钥
                 .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
