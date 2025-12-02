@@ -12,6 +12,47 @@
              #{createUser},#{updateUser})
 
     </insert>
+    <update id="update">
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+        </set>
+        where id = #{id}
+
+    </update>
+    <select id="getsetmeal_dish" resultType="com.sky.vo.DishVO" parameterType="com.sky.dto.DishPageQueryDTO">
+        SELECT d.*,c.name AS categoryName FROM dish d LEFT OUTER JOIN category c
+                                                                      ON d.category_id=c.id
+    </select>
+    <select id="pageQuery" resultType="com.sky.vo.DishVO" parameterType="com.sky.dto.DishPageQueryDTO">
+        select d.*, c.name as categoryName
+        from dish d
+        left join category c on d.category_id = c.id
+        <where>
+            <if test="name != null">
+                and d.name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and d.category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and d.status = #{status}
+            </if>
+        </where>
+        order by d.create_time desc
+    </select>
+    <delete id="getBydelites">
+        delete from dish where id in
+                         <foreach collection="ids" open="(" close=")" separator="," item="id">
+                             #{id}
+                         </foreach>
+    </delete>
 
 
 </mapper>
