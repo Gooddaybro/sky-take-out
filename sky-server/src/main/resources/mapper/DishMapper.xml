@@ -47,6 +47,36 @@
         </where>
         order by d.create_time desc
     </select>
+    <select id="list" resultType="com.sky.entity.Dish" parameterType="com.sky.entity.Dish">
+        SELECT
+        id, name, category_id, price, image, description,
+        status, update_time, create_time, create_user, update_user
+        FROM dish
+        <where>
+            <!-- 按分类 ID 查询（最常用） -->
+            <if test="categoryId != null">
+                AND category_id = #{categoryId}
+            </if>
+
+            <!-- 按状态查询：1启售 0停售（管理端常用） -->
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+
+            <!-- 按菜品名称模糊查询 -->
+            <if test="name != null and name != ''">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+
+            <!-- 如果需要其他条件，可以继续加，例如代码 code 等 -->
+            <!-- <if test="code != null and code != ''">
+                AND code = #{code}
+            </if> -->
+        </where>
+
+        <!-- 排序：通常按更新时间降序，便于看到最新修改的 -->
+        ORDER BY update_time DESC
+    </select>
     <delete id="getBydelites">
         delete from dish where id in
                          <foreach collection="ids" open="(" close=")" separator="," item="id">

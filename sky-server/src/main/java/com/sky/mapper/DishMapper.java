@@ -21,7 +21,7 @@ public interface DishMapper {
      * @return
      */
     @Select("select count(id) from dish where category_id = #{categoryId}")
-    Integer countByCategoryId(Long categoryId);
+    Long countByCategoryId(Long categoryId);
 
     @AutoFill(value = OperationType.INSERT)
     void insert(Dish dish);
@@ -58,4 +58,12 @@ public interface DishMapper {
      * @param dish
      */
     void update(Dish dish);
+
+
+    /**
+     * 条件查询菜品
+     * @param dish
+     * @return
+     */
+    List<Dish> list(Dish dish);
 }
