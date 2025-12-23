@@ -48,5 +48,5 @@ sky:
     bucket-name: ${sky.alioss.bucket-name}
 
   wechat:
-    appid: ${sky.wechat.appid} # 注意你原文里有笔误 wechar 改为 wechat
+    appid: ${sky.wechat.appid}
     secret: ${sky.wechat.secret}
