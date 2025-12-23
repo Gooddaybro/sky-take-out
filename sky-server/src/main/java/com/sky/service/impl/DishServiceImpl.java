@@ -12,7 +12,6 @@ import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
-import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -23,8 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import static com.sun.xml.internal.bind.v2.ClassFactory.cleanCache;
 
 @Slf4j
 @Service
@@ -91,9 +92,9 @@ public class DishServiceImpl implements DishService {
     @Override
     public void Batchdelete(List<Long> ids) {
         for (Long id : ids) {
-            Dish dish = dishMapper.getById(ids);
+            Dish dish = dishMapper.getById(id);
             //怎么去判断呢，就看他的这个状态是不是在售
-            if (dish.getStatus() == StatusConstant.ENABLE) {
+            if (Objects.equals(dish.getStatus(), StatusConstant.ENABLE)) {
                 throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
             }
         }
@@ -101,12 +102,7 @@ public class DishServiceImpl implements DishService {
         if (longs != null && longs.size() > 0) {
             throw new DeletionNotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
         }
-//        for (Long id : ids) {
-//            dishMapper.getBydelite(id);
-//
-//            dishFlavorMapper.getBydelite(id);
-//        }
-        //由于这样查数据库查的太多次，效率太低，直接写一个sql让他批量删除
+
         dishMapper.getBydelites(ids);
         dishFlavorMapper.getBydelites(ids);
 
@@ -120,7 +116,7 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public DishVO findById(Long id) {
-        Dish dish= dishMapper.getById(Collections.singletonList(id));
+        Dish dish = dishMapper.getById(id);
         DishVO dishVO = new DishVO();
 
         List<DishFlavor>dishFlavors= dishFlavorMapper.getById(id);
@@ -173,5 +169,22 @@ public class DishServiceImpl implements DishService {
         }
 
         return dishVOList;
+    }
+
+
+    /**
+     * 菜品起售停售
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        //修改数据库中的状态
+        Dish dish=Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+        dishMapper.update(dish);
+
     }
 }

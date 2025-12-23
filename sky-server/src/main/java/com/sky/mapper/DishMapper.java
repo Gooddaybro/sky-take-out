@@ -39,15 +39,15 @@ public interface DishMapper {
      * @param ids
      * @return
      */
-    @Select("select * from dish where id=#{id}")
-    Dish getById(List<Long> ids);
+    @Select("select * from dish where id = #{id}")
+    Dish getById(Long id);
 
 
     /**
      * 根据菜品id来删除菜品
      * @param id
      */
-    @Delete("delete from dish where dish_id=#{dishId}")
+    @Delete("delete from dish where id = #{id}")
     void getBydelite(Long id);
 
 
