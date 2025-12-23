@@ -36,11 +36,9 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
-    # 设置jwt过期时间
+    # 建议修改：不要硬编码 itcast
+    admin-secret-key: ${sky.jwt.admin-secret-key}
     admin-ttl: 7200000
-    # 设置前端传递过来的令牌名称
     admin-token-name: token
 
   alioss:
@@ -49,7 +47,6 @@ sky:
     access-key-secret: ${sky.alioss.access-key-secret}
     bucket-name: ${sky.alioss.bucket-name}
 
-
   wechat:
-    appid: ${sky.wechar.appid}
-    secret: ${sky.wechar.secret}
+    appid: ${sky.wechat.appid} # 注意你原文里有笔误 wechar 改为 wechat
+    secret: ${sky.wechat.secret}
