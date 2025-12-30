@@ -36,8 +36,6 @@ logging:
 
 sky:
   jwt:
-    # 建议修改：不要硬编码 itcast
-    admin-secret-key: ${sky.jwt.admin-secret-key}
     admin-ttl: 7200000
     admin-token-name: token
 

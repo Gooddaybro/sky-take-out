@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController("adminShopController")
 @RequestMapping("/admin/shop")
 @Api(tags = "店铺相关接口")
@@ -27,7 +30,6 @@ public class ShopController {
      * @param status
      * @return
      */
-    //post delete put get
     @PutMapping("/{status}")
     @ApiOperation("设置店铺的营业状态")
     public Result setStatus(@PathVariable Integer status) {
@@ -43,6 +45,5 @@ public class ShopController {
         log.info("获取店铺的营业状态:{}",shopStatus);
         return Result.success(shopStatus);
     }
-
 
 }

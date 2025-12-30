@@ -6,7 +6,12 @@ sky:
     database: sky_take_out
     username: root
     password: 123456
-
+  jwt:
+    # 直接给它一个字符串，不要用 ${} 包裹自己
+    admin-secret-key: itcast
+    admin-ttl: 7200000
+    user-secret-key: itcast
+    user-ttl: 7200000
   alioss:
     endpoint: oss-cn-beijing.aliyuncs.com
     access-key-id: LTAI5tPeFLzsPPT8gG3LPW64
