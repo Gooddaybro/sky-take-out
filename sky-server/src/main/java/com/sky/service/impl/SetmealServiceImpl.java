@@ -81,6 +81,34 @@ public class SetmealServiceImpl implements SetmealService {
             });
             setmealDishMapper.insertBatch(setmealDishes);
         }
+    }
 
+    /**
+     * 分页查询
+     * @param setmealPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult pageQuery(SetmealPageQueryDTO setmealPageQueryDTO) {
+        PageHelper.startPage(setmealPageQueryDTO.getPage(),setmealPageQueryDTO.getPageSize());
+        Page<SetmealVO>page= setmealMapper.pageQuery(setmealPageQueryDTO);
+        return new PageResult(page.getTotal(), page.getResult());
+    }
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    @Override
+    public void deleteBatch(List<Long> ids) {
+    //删除套餐setmeal 还有 setmeal_dish 套餐和套餐与菜品的关联表
+        for(Long id:ids){
+            Setmeal setmeal=setmealMapper.getById(id);
+            if(setmeal.getStatus().equals(StatusConstant.ENABLE)) {
+                throw new DeletionNotAllowedException(MessageConstant.DISH_ON_SALE);
+            }
+        }
+        setmealMapper.deleteByids(ids);
+        setmealDishMapper.deleteByids(ids);
     }
 }

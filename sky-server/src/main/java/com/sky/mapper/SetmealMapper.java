@@ -1,7 +1,10 @@
 package com.sky.mapper;
 
+import com.github.pagehelper.Page;
+import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
 import com.sky.vo.DishItemVO;
+import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -39,4 +42,25 @@ public interface SetmealMapper {
      * @param setmeal
      */
     void insert(Setmeal setmeal);
+
+    /**
+     * 分页查询
+     *
+     * @param setmealPageQueryDTO
+     * @return
+     */
+    Page<SetmealVO> pageQuery(SetmealPageQueryDTO setmealPageQueryDTO);
+
+    /**
+     * 批量删除
+     * @param ids
+     */
+    void deleteByids(List<Long> ids);
+
+    /**
+     * 根据id查找菜品套餐
+     * @param id
+     * @return
+     */
+    Setmeal getById(Long id);
 }

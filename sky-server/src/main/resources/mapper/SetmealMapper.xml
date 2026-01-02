@@ -8,6 +8,12 @@
         values
             (#{categoryId}, #{name}, #{price}, #{status}, #{description}, #{image}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})
     </insert>
+    <delete id="deleteByids">
+        delete from setmeal where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
     <select id="list" parameterType="Setmeal" resultType="Setmeal">
         select * from setmeal
         <where>
@@ -25,4 +31,25 @@
     <select id="countByCategoryId" resultType="java.lang.Long" parameterType="java.lang.Long">
         SELECT COUNT(*) FROM setmeal WHERE category_id = #{categoryId}
     </select>
+    <select id="pageQuery" resultType="com.sky.vo.SetmealVO">
+        select s.*, c.name as categoryName
+        from setmeal s
+        left join category c on s.category_id = c.id
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%', #{name}, '%')
+            </if>
+            <if test="status != null">
+                and s.status = #{status}
+            </if>
+            <if test="categoryId != null">
+                and s.category_id = #{categoryId}
+            </if>
+        </where>
+        order by s.create_time desc
+    </select>
+    <select id="getById" resultType="com.sky.entity.Setmeal">
+        select * from setmeal where id = #{id}
+    </select>
+
 </mapper>
