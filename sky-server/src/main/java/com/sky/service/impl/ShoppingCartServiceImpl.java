@@ -35,25 +35,34 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void addShoppingCart(ShoppingCartDTO shoppingCartDTO) {
         ShoppingCart shoppingCart = new ShoppingCart();
         BeanUtils.copyProperties(shoppingCartDTO, shoppingCart);
-        shoppingCart.setId(BaseContext.getCurrentId());
-        List<ShoppingCart> list=shoppingCartMapper.list(shoppingCart);
-        if(list != null && list.size()>0){
-            ShoppingCart cart=list.get(0);
-            cart.setNumber(cart.getNumber()+1);
+        // 必须设置 userId 而不是 id
+        shoppingCart.setUserId(BaseContext.getCurrentId());
+        List<ShoppingCart> list = shoppingCartMapper.list(shoppingCart);
+        if (list != null && list.size() > 0) {
+            // 如果已经存在，数量+1
+            ShoppingCart cart = list.get(0);
+            cart.setNumber(cart.getNumber() + 1);
             shoppingCartMapper.updateNumberById(cart);
-        }else{
-            Long dishId=shoppingCartDTO.getDishId();
-            if(dishId!=null){
-                Dish dish=dishMapper.getById(dishId);
-                shoppingCart.setName(dish.getName());
-                shoppingCart.setImage(dish.getImage());
-                shoppingCart.setAmount(dish.getPrice());
-            }else{
-                Long setmealId=shoppingCartDTO.getSetmealId();
-                Setmeal setmeal=setmealMapper.getById(setmealId);
-                shoppingCart.setName(setmeal.getName());
-                shoppingCart.setImage(setmeal.getImage());
-                shoppingCart.setAmount(setmeal.getPrice());
+        } else {
+            // 如果不存在，插入新数据
+            Long dishId = shoppingCartDTO.getDishId();
+            if (dishId != null) {
+                Dish dish = dishMapper.getById(dishId);
+                // 判断查出来的菜品是否存在
+                if (dish != null) {
+                    shoppingCart.setName(dish.getName());
+                    shoppingCart.setImage(dish.getImage());
+                    shoppingCart.setAmount(dish.getPrice());
+                }
+            } else {
+                Long setmealId = shoppingCartDTO.getSetmealId();
+                Setmeal setmeal = setmealMapper.getById(setmealId);
+                // 判断查出来的套餐是否存在
+                if (setmeal != null) {
+                    shoppingCart.setName(setmeal.getName());
+                    shoppingCart.setImage(setmeal.getImage());
+                    shoppingCart.setAmount(setmeal.getPrice());
+                }
             }
             shoppingCart.setNumber(1);
             shoppingCart.setCreateTime(LocalDateTime.now());
