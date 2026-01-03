@@ -77,6 +77,11 @@
         <!-- 排序：通常按更新时间降序，便于看到最新修改的 -->
         ORDER BY update_time DESC
     </select>
+    <select id="getBySetmealId" resultType="com.sky.entity.Dish">
+        select d.* from dish d
+                            left join setmeal_dish sd on d.id = sd.dish_id
+        where sd.setmeal_id = #{setmealId}
+    </select>
     <delete id="getBydelites">
         delete from dish where id in
                          <foreach collection="ids" open="(" close=")" separator="," item="id">

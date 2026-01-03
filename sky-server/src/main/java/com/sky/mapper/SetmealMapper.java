@@ -3,6 +3,7 @@ package com.sky.mapper;
 import com.github.pagehelper.Page;
 import com.sky.dto.SetmealPageQueryDTO;
 import com.sky.entity.Setmeal;
+import com.sky.entity.SetmealDish;
 import com.sky.vo.DishItemVO;
 import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -63,4 +64,16 @@ public interface SetmealMapper {
      * @return
      */
     Setmeal getById(Long id);
+
+    /**
+     * 修改菜品数据
+     * @param setmeal
+     */
+    void update(Setmeal setmeal);
+
+    /**
+     * 批量插入菜品与套餐之间的关系
+     * @param setmealDishes
+     */
+    void insertBatch(List<SetmealDish> setmealDishes);
 }

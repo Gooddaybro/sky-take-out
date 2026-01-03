@@ -42,4 +42,24 @@ public interface SetmealService {
      * @param ids
      */
     void deleteBatch(List<Long> ids);
+
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
+    SetmealVO getById(Long id);
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     */
+    void updateWithDish(SetmealDTO setmealDTO);
+
+    /**
+     * 套餐起售停售
+     * @param status
+     * @param id
+     */
+    void setStartOrStop(Integer status, Long id);
 }

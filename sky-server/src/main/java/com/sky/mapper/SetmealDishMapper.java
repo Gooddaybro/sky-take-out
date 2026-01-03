@@ -7,7 +7,11 @@ import java.util.List;
 
 @Mapper
 public interface SetmealDishMapper {
-    //传入这个方法
+    /**
+     *检查当前要删除的菜品是否被关联到了某个套餐中
+     * @param dishIds
+     * @return
+     */
     List<Long> getsetmeal_dish(List<Long> dishIds);
 
     /**
@@ -21,4 +25,17 @@ public interface SetmealDishMapper {
      * @param ids
      */
     void deleteByids(List<Long> ids);
+
+    /**
+     * 根据id查询关联套餐
+     * @param id
+     * @return
+     */
+    List<SetmealDish> getBysetmealId(Long id);
+
+    /**
+     * 删除菜品套餐关系
+     * @param id
+     */
+    void deleteBySetmealId(Long id);
 }
