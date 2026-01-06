@@ -1,8 +1,10 @@
 package com.sky.controller.user;
 
 import com.sky.dto.OrdersSubmitDTO;
+import com.sky.dto.OrdersPaymentDTO;
 import com.sky.result.Result;
 import com.sky.service.OrderService;
+import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +27,25 @@ public class OrderController {
         log.info("用户下单:{}", ordersSubmitDTO);
         OrderSubmitVO orderSubmitVO=orderService.submitOrder(ordersSubmitDTO);
         return Result.success(orderSubmitVO);
+    }
+
+    /**
+     * 订单支付（微信/模拟）
+     */
+    @PostMapping("/payment")
+    public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
+        log.info("订单支付:{}", ordersPaymentDTO);
+        OrderPaymentVO orderPaymentVO = orderService.payment(ordersPaymentDTO);
+        return Result.success(orderPaymentVO);
+    }
+
+    /**
+     * 支付成功回调/模拟确认
+     */
+    @PostMapping("/paySuccess")
+    public Result<String> paySuccess(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
+        log.info("支付成功回调:{}", ordersPaymentDTO);
+        orderService.paySuccess(ordersPaymentDTO.getOrderNumber(),ordersPaymentDTO.getPayMethod());
+        return Result.success();
     }
 }
