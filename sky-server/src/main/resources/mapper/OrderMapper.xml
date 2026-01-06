@@ -35,4 +35,9 @@
         </set>
         where id = #{id}
     </update>
+    <select id="getLateOrder" resultType="com.sky.entity.Orders" parameterType="java.time.LocalDateTime">
+        select * from orders
+        where status = 1
+          and order_time &lt; #{time}
+    </select>
 </mapper>

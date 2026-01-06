@@ -37,21 +37,17 @@ public class DishController {
     @GetMapping("/list")
     @ApiOperation("根据分类id查询菜品")
     public Result<List<DishVO>> list(Long categoryId) {
-
         String key="dish_"+categoryId;
         List<DishVO> list= (List<DishVO>) redisTemplate.opsForValue().get(key);
         if(list!=null&&list.size()>0){
             return Result.success(list);
         }
-
         Dish dish = new Dish();
         dish.setCategoryId(categoryId);
-        dish.setStatus(StatusConstant.ENABLE);//查询起售中的菜品
-
+        //查询起售中的菜品
+        dish.setStatus(StatusConstant.ENABLE);
          list = dishService.listWithFlavor(dish);
-
          redisTemplate.opsForValue().set(key,list);
-
         return Result.success(list);
     }
 

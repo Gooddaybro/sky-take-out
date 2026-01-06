@@ -7,6 +7,7 @@ import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @ApiOperation("用户下单")
     @PostMapping("/submit")
     public Result<OrderSubmitVO> submit(@RequestBody OrdersSubmitDTO ordersSubmitDTO) {
         log.info("用户下单:{}", ordersSubmitDTO);
@@ -32,6 +34,7 @@ public class OrderController {
     /**
      * 订单支付（微信/模拟）
      */
+    @ApiOperation("订单支付")
     @PostMapping("/payment")
     public Result<OrderPaymentVO> payment(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
         log.info("订单支付:{}", ordersPaymentDTO);
@@ -42,6 +45,7 @@ public class OrderController {
     /**
      * 支付成功回调/模拟确认
      */
+    @ApiOperation("支付成功回调")
     @PostMapping("/paySuccess")
     public Result<String> paySuccess(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
         log.info("支付成功回调:{}", ordersPaymentDTO);

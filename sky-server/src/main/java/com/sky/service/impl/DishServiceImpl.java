@@ -46,7 +46,6 @@ public class DishServiceImpl implements DishService {
     @Override
     @Transactional
     public void saveWithFlavor(DishDTO dishDTO) {
-
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
         //向菜品表插入一条菜品
@@ -78,14 +77,6 @@ public class DishServiceImpl implements DishService {
 
     /**
      * 菜品批量删除
-     * 1.如果是在售的时候就不可以删除，首先给他找到数据库里的数据对他进行遍历
-     * 如果说遍历到了是在售的就抛出异常
-     * 2.如果这个菜品被某套餐关联了也不可以删除
-     * 还是得去数据库中去找套餐相关联的这个菜品，如果有那就得抛出异常
-     * 得新建一个setmeal_dish的mapper
-     * 3.删除菜品 通过循环一个一个的删掉
-     * 4.删除菜品对应的口味
-     *
      * @param ids
      */
     @Transactional
@@ -118,11 +109,9 @@ public class DishServiceImpl implements DishService {
     public DishVO findById(Long id) {
         Dish dish = dishMapper.getById(id);
         DishVO dishVO = new DishVO();
-
         List<DishFlavor>dishFlavors= dishFlavorMapper.getById(id);
         BeanUtils.copyProperties(dish,dishVO);
         dishVO.setFlavors(dishFlavors);
-
         return dishVO;
     }
 
@@ -134,10 +123,8 @@ public class DishServiceImpl implements DishService {
     public void updateWithFlavor(DishDTO dishDTO) {
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
-
         //修改菜品表基本信息
         dishMapper.update(dish);
-
         //删除原有的口味数据
         dishFlavorMapper.deleteByDishId(dishDTO.getId());
         //重新插入口味数据
@@ -167,7 +154,6 @@ public class DishServiceImpl implements DishService {
             dishVO.setFlavors(byId);
             dishVOList.add(dishVO);
         }
-
         return dishVOList;
     }
 

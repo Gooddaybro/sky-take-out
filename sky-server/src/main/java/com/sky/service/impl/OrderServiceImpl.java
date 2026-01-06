@@ -103,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
         if (!Objects.equals(orders.getStatus(), Orders.PENDING_PAYMENT)) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
-
         // 当前未集成真实支付，返回模拟支付参数（可对接微信时改造）
         String nonce = UUID.randomUUID().toString().replace("-", "");
         String ts = String.valueOf(System.currentTimeMillis() / 1000);
