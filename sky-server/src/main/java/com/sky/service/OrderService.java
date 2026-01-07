@@ -26,4 +26,10 @@ public interface OrderService {
      * @param payMethod
      */
     void paySuccess(String orderNumber,Integer payMethod);
+
+    /**
+     * 客户催单
+     * @param orderId 订单ID
+     */
+    void reminder(Long orderId);
 }

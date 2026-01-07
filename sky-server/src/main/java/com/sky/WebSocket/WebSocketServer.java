@@ -21,7 +21,7 @@ import java.util.Map;
 public class WebSocketServer {
 
     //存放会话对象
-    private static Map<String, Session> sessionMap = new HashMap();
+    private static Map<String, Session> sessionMap = new HashMap<>();
 
     /**
      * 连接建立成功调用的方法
@@ -66,6 +66,44 @@ public class WebSocketServer {
                 session.getBasicRemote().sendText(message);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 向指定客户端发送消息
+     *
+     * @param sid 客户端标识
+     * @param message 消息内容
+     */
+    public void sendToClient(String sid, String message) {
+        Session session = sessionMap.get(sid);
+        if (session != null) {
+            try {
+                session.getBasicRemote().sendText(message);
+            } catch (Exception e) {
+                log.error("向客户端{}发送消息失败: {}", sid, e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * 向管理端推送消息（新订单提醒、催单等）
+     *
+     * @param type 消息类型：1-新订单提醒，2-客户催单
+     * @param message 消息内容（JSON格式）
+     */
+    public void sendToAdminClient(Integer type, String message) {
+        // 向所有管理端客户端推送（sid以admin开头）
+        for (Map.Entry<String, Session> entry : sessionMap.entrySet()) {
+            String sid = entry.getKey();
+            if (sid != null && sid.startsWith("admin")) {
+                try {
+                    entry.getValue().getBasicRemote().sendText(message);
+                    log.info("向管理端客户端{}推送消息，类型：{}", sid, type);
+                } catch (Exception e) {
+                    log.error("向管理端客户端{}推送消息失败: {}", sid, e.getMessage());
+                }
             }
         }
     }

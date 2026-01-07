@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,17 @@ public class OrderController {
     public Result<String> paySuccess(@RequestBody OrdersPaymentDTO ordersPaymentDTO){
         log.info("支付成功回调:{}", ordersPaymentDTO);
         orderService.paySuccess(ordersPaymentDTO.getOrderNumber(),ordersPaymentDTO.getPayMethod());
+        return Result.success();
+    }
+
+    /**
+     * 客户催单
+     */
+    @ApiOperation("客户催单")
+    @PostMapping("/reminder/{id}")
+    public Result<String> reminder(@PathVariable Long id){
+        log.info("客户催单，订单ID:{}", id);
+        orderService.reminder(id);
         return Result.success();
     }
 }

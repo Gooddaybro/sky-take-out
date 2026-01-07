@@ -16,14 +16,19 @@ import com.sky.mapper.ShoppingCartMapper;
 import com.sky.service.OrderService;
 import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderSubmitVO;
+import com.sky.WebSocket.WebSocketServer;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -37,6 +42,8 @@ public class OrderServiceImpl implements OrderService {
     private AddressBookMapper addressBookMapper;
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -133,5 +140,49 @@ public class OrderServiceImpl implements OrderService {
         orders.setPayMethod(payMethod);
         orders.setCheckoutTime(LocalDateTime.now());
         orderMapper.update(orders);
+
+        // 支付成功后，通过WebSocket向管理端推送新订单提醒
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1); // 1-新订单提醒
+        map.put("orderId", orders.getId());
+        map.put("orderNumber", orders.getNumber());
+        map.put("orderAmount", orders.getAmount());
+        map.put("orderTime", orders.getOrderTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        map.put("phone", orders.getPhone());
+        map.put("address", orders.getAddress());
+        map.put("consignee", orders.getConsignee());
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAdminClient(1, json);
+    }
+
+    /**
+     * 客户催单
+     *
+     * @param orderId 订单ID
+     */
+    @Override
+    public void reminder(Long orderId) {
+        // 查询订单
+        Orders orders = orderMapper.getById(orderId);
+        if (orders == null) {
+            throw new OrderBusinessException(MessageConstant.ORDER_NOT_FOUND);
+        }
+
+        // 校验订单状态：只有待接单、已接单、派送中才能催单
+        Integer status = orders.getStatus();
+        if (!Objects.equals(status, Orders.TO_BE_CONFIRMED) &&
+            !Objects.equals(status, Orders.CONFIRMED) &&
+            !Objects.equals(status, Orders.DELIVERY_IN_PROGRESS)) {
+            throw new OrderBusinessException("订单状态不允许催单");
+        }
+
+        // 通过WebSocket向管理端推送催单提醒
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 2); // 2-客户催单
+        map.put("orderId", orders.getId());
+        map.put("orderNumber", orders.getNumber());
+        map.put("reminderTime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAdminClient(2, json);
     }
 }

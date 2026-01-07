@@ -30,6 +30,14 @@ public interface OrderMapper {
     void update(Orders orders);
 
     /**
+     * 根据订单ID查询
+     * @param id
+     * @return
+     */
+    @Select("select * from orders where id = #{id}")
+    Orders getById(Long id);
+
+    /**
      * 得到超时订单
      * @param time
      * @return
