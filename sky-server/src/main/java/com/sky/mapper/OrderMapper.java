@@ -48,4 +48,11 @@ public interface OrderMapper {
      * 根据动态条件统计营业额
      */
     Double sumByMap(Map map);
+
+    /**
+     * 查询满足条件的订单
+     * @param map
+     * @return
+     */
+    Integer countByMap(Map map);
 }
